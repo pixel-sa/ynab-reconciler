@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    <div class="jumbotron text-center">
+        <h1>Welcome to YNAB Reconciler</h1>
+        <p class="lead">This app is...</p>
+    </div>
+
+    <div>
+        {{budgets}}
+
+    </div>
+
+    <ul>
+        {% for budget in budgets.data.budgets %}
+            <li data-id={{budget.id}}>{{budget.name}}</li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
+
