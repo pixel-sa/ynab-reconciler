@@ -9,6 +9,7 @@ import pandas as pd
 from flask import Flask, render_template, jsonify, request, redirect, session, json
 from datetime import datetime, date, time, timedelta
 from difflib import SequenceMatcher
+import utils as utils
 
 app = Flask(__name__)
 # app.secret_key = config.app_secret_key
@@ -35,13 +36,8 @@ def get_budget():
     url = 'https://api.youneedabudget.com/v1/budgets'
     response = requests.get(url, headers=header)
 
-    print(response)
-    print(response.status_code)
-    print(response.headers)
-
     if response.status_code == 200:
         budget_list = response.json()
-        # print(json.dumps(budget_list, indent=4))
         return render_template("about.html", budgets=budget_list)
     else:
         return("Error!!! " + str(response.status_code))
@@ -56,12 +52,10 @@ def get_accounts():
 
     get_accounts_url = f'https://api.youneedabudget.com/v1/budgets/{budget_id}/accounts'
     accounts_response = requests.get(get_accounts_url, headers=header)
-    # print(accounts_response.json())
 
     status = accounts_response.status_code
     if status == 200:
         accounts_list = accounts_response.json()
-        # print(json.dumps(budget_list, indent=4))
         return jsonify(accounts_list)
     else:
         return("Error!!! " + str(status))
@@ -75,6 +69,7 @@ def get_transactions():
     budget_id = request.args['budgetId']
     account_id = request.args['accountId']
     balance = request.args['balance']
+    csv_file = 'transactions.CSV'
 
     print(budget_id)
     print(account_id)
@@ -82,28 +77,18 @@ def get_transactions():
     access_token = config.access_token
     header = {'Authorization': 'Bearer ' + access_token}
 
-    # get_accounts_url = f'https://api.youneedabudget.com/v1/budgets/{budget_id}/accounts'
-    # accounts_response = requests.get(get_accounts_url, headers=header)
-    # print(accounts_response.json())
-
     query = '?since_date=2018-08-01'
-    # url = f'https://api.youneedabudget.com/v1/budgets/{budget_id}/transactions' + query
-    # response = requests.get(url, headers=header)
     url = f'https://api.youneedabudget.com/v1/budgets/{budget_id}/accounts/{account_id}/transactions' + query
-    print(url)
     response = requests.get(url, headers=header)
 
-    print(response)
-    print(response.headers)
-    # print(response.json())
-    transaction_list = response.json()
-    print(json.dumps(transaction_list, indent=4))
-    print(type(transaction_list))
-    print(len(transaction_list['data']['transactions']))
+    data = json.loads(response.content.decode('utf-8'))
+    transaction_list = data['data']['transactions']
 
+    bank_data = utils.convert_csv_to_json(csv_file)
 
+    utils.reconcile_differences(transaction_list, bank_data)
 
-    return jsonify("yay!")
+    return jsonify(transaction_list)
 
 
 # @app.route('/authenticate')
