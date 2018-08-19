@@ -23,7 +23,7 @@ def index():
 def about():
     return render_template('about.html')
 
-@app.route('/ynab')
+@app.route('/ynab', methods=['GET', 'POST'])
 def get_budget():
 
     access_token = config.access_token
@@ -35,6 +35,7 @@ def get_budget():
 
     url = 'https://api.youneedabudget.com/v1/budgets'
     response = requests.get(url, headers=header)
+    print(response.headers['X-RATE-LIMIT'])
 
     if response.status_code == 200:
         budget_list = response.json()
@@ -90,6 +91,13 @@ def get_transactions():
 
     return jsonify(transaction_list)
 
+@app.route('/upload/csv', methods=["POST"])
+def uploadCsv():
+    upload = request.files['file'].read()
+    upload = upload.decode("utf-8")
+    converted_upload = utils.convert_csv_to_json(upload)
+
+    return jsonify("success!")
 
 # @app.route('/authenticate')
 # def ynab_auth():
