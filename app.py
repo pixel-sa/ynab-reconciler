@@ -22,7 +22,7 @@ def index():
 def about():
     return render_template('about.html')
 
-@app.route('/ynab')
+@app.route('/ynab', methods=['GET', 'POST'])
 def get_budget():
 
     access_token = config.access_token
@@ -105,6 +105,25 @@ def get_transactions():
 
     return jsonify("yay!")
 
+@app.route('/upload/csv', methods=["POST"])
+def uploadCsv():
+    print(request)
+    print(request.files)
+    print(request.files['file'])
+    print("*****")
+    print("")
+
+    upload = request.files['file'].read()
+    print(upload)
+
+   
+
+
+
+
+    
+
+    return jsonify("success!")
 
 # @app.route('/authenticate')
 # def ynab_auth():

@@ -35,7 +35,7 @@ $(document).ready(function(){
     });
 
     function displayAccountBalance(balance){
-        console.log("dispaying account balance");
+        console.log("dispaying account balance!!!");
         html = "";
         html += '<div class="form-group">';
         html += '<label for="account-balance">Please enter correct account balance</label>';
@@ -43,21 +43,53 @@ $(document).ready(function(){
         // html += '<small id="emailHelp" class="form-text text-muted">Your most up to date account balance is'+ balance +'</small>';
         html += '</div>';
         
-        html += '<div class="form-group">';
+        html += '<form id="upload-file" method="post" enctype="multipart/form-data">';
+        html += '<fieldset>';
+        html += '<label for="file">Select a file</label>';
+        html += '<input name="file" type="file">';
+        html += '</fieldset>';
+        html += '<fieldset>';
+        html += '<button type="submit" class="btn btn-primary" id="upload-file-btn">Submit!</button>';
+        html += '</fieldset>';
+        html += '</form>';
 
-        html += '<div class="input-group mb-3">';
-        html += '<div class="input-group-prepend">';
-        html += '<span class="input-group-text" id="inputGroupFileAddon01">Upload</span>';
-        html += '</div>';
-        html += '<div class="custom-file">';
-        html += '<input type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">';
-        html += '<label class="custom-file-label" for="inputGroupFile01">Choose file</label>';
-        html += '</div>';
-        html += '</div>';
-        html += '</div>';
+
+
+        // html += '<form id="upload-csv-form" method="post" enctype="multipart/form-data">';
+        // html += '<div class="form-group">';
+
+        // html += '<div class="input-group mb-3">';
+        // html += '<div class="input-group-prepend">';
+        // html += '<span class="input-group-text" id="inputGroupFileAddon01">Upload</span>';
+        // html += '</div>';
+        // html += '<div class="custom-file">';
+        // html += '<input type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">';
+        // html += '<label class="custom-file-label" for="inputGroupFile01">Choose file</label>';
+        // html += '</div>';
+        // html += '</div>';
+        // html += '</div>';
+        // html += '<button type="submit" class="btn btn-primary" id="upload-file-btn">Submit</button>';
+        // html += '</form>';
 
         $("#balance-div").html(html);
         dispalyFileName();
+        // uploadCsvFile();
+
+        $('#upload-file-btn').click(function() {
+            var form_data = new FormData($('#upload-file')[0]);
+            $.ajax({
+                type: 'POST',
+                url: '/upload/csv',
+                data: form_data,
+                contentType: false,
+                cache: false,
+                processData: false,
+                async: false,
+                success: function(data) {
+                    console.log('Success!');
+                },
+            });
+        });
 
     }
 
@@ -68,6 +100,31 @@ $(document).ready(function(){
             console.log(fileName);
             $(this).next('.custom-file-label').html(fileName);
         })    
+    }
+
+    function uploadCsvFile(){
+
+        $(document).on('click', '#upload-file-btn', function(event) {
+            console.log(event);
+            var form_data = new FormData($('#upload-file')[0]);
+            $.ajax({
+                type: 'POST',
+                url: '/upload/csv',
+                data: form_data,
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function(response) {
+                    return false;
+                    event.preventDefault();
+                    console.log(response);
+                },
+            });
+        
+
+            return false;
+        });
+
     }
 
     function getAccounts(budgetId){
