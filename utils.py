@@ -6,9 +6,10 @@ from datetime import date, datetime, timedelta
 
 def convert_csv_to_json(filename):
     fieldnames = ["Date", "No.", "Description", "Debit", "Credit"]
-    csv_filename = filename
-    f = open(csv_filename, 'r')
-    csv_reader = csv.DictReader(f, fieldnames)
+    # csv_filename = filename
+    # f = open(csv_filename, 'r')
+    # csv_reader = csv.DictReader(f, fieldnames)
+    csv_reader = csv.DictReader(filename, fieldnames)
     data = json.dumps([r for r in csv_reader])
     return json.loads(data)
 

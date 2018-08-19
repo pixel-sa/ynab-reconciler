@@ -1,27 +1,31 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-	<div class="form-group">
-		<label for="budget-select">Select Budget</label>
-		<select class="form-control" id="budget-select">
-			<option disabled selected>Choose One</option>
-
-			{% for budget in budgets.data.budgets %}
-				<option data-id={{budget.id}}>{{budget.name}}</option>
-			{% endfor %}	
-		</select>
+	<div class="alert alert-danger" role="alert" id="alert-message" style="display: none;">
+		Change a few things up and try submitting again.
 	</div>
 
-	<div class="form-group">
-		<div id="account-select-div"></div>
+	<div id="initial-question"></div>
+
+	<div id="main">
+		<div id="budget-select-div" class="form-group" style="display: none;">
+			<label for="budget-select">Select YNAB Budget</label>
+			<select class="form-control" id="budget-select">
+				<option disabled selected>Choose One</option>
+
+				{% for budget in budgets.data.budgets %}
+					<option data-id={{budget.id}}>{{budget.name}}</option>
+				{% endfor %}	
+			</select>
+		</div>
+
+		<div class="form-group">
+			<div id="account-select-div"></div>
+		</div>
+
+		<div id="bank-div"></div>
+		<div id="balance-div"></div>
 	</div>
-
-	<div id="balance-div"></div>
-
-	<!-- <script src="{{ url_for('static', filename='js/budget.js')}}"></script>
-	<script>
-		BUDGET.init("hello message")
-	</script> -->
 
 {% endblock %}
 
