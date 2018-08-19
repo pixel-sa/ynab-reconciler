@@ -2,13 +2,21 @@
 
 {% block body %}
 	<div class="form-group">
-		<label for="budget-select">Select Budget to Reconcile</label>
+		<label for="budget-select">Select Budget</label>
 		<select class="form-control" id="budget-select">
+			<option disabled selected>Choose One</option>
+
 			{% for budget in budgets.data.budgets %}
 				<option data-id={{budget.id}}>{{budget.name}}</option>
 			{% endfor %}	
 		</select>
 	</div>
+
+	<div class="form-group">
+		<div id="account-select-div"></div>
+	</div>
+
+	<div id="balance-div"></div>
 
 	<!-- <script src="{{ url_for('static', filename='js/budget.js')}}"></script>
 	<script>
