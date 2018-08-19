@@ -2,9 +2,10 @@ import csv
 import json
 from datetime import date, datetime
 
-fieldnames=["Date", "No.", "Description", "Debit", "Credit"]
+
 
 def convert_csv_to_json(filename):
+    fieldnames = ["Date", "No.", "Description", "Debit", "Credit"]
     csv_filename = filename
     f = open(csv_filename, 'r')
     csv_reader = csv.DictReader(f, fieldnames)
