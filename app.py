@@ -134,6 +134,10 @@ def uploadCsv():
     # print(converted_transaction)
     return jsonify("success!")
 
+@app.route('/policy')
+def policy():
+    return render_template('policy.html')
+
 # @app.route('/authenticate')
 # def ynab_auth():
 #     print(config.get_redirect_url())
@@ -141,7 +145,7 @@ def uploadCsv():
 #     # return redirect(f'https://app.youneedabudget.com/oauth/authorize?client_id={config.client_id}&redirect_uri={config.get_redirect_url()}&response_type=token')
 
 # @app.route('/dashboard')
-# def get_access_token():
+def get_access_token():
 #     code = request.args.get('code')
 #     print(code)
 #     params = {'client_id': config.client_id, 'client_secret': config.client_secret, 'redirect_uri': config.get_redirect_url, 'grant_type': 'authorization_code', 'code': code}
@@ -152,7 +156,7 @@ def uploadCsv():
 #     print(response.content.decode('utf-8'))
 #     session['token'] = json.loads(response.content.decode('utf-8'))
 
-#     return render_template('dashboard.html')
+    return render_template('dashboard.html')
 
 
 if __name__ == '__main__':

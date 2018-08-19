@@ -2,9 +2,41 @@
 
 {% block body %}
 
-    BODY HERE
-    Click here to sign in and get your budget
-    <a href="/authenticate">
-        <button> Sign In</button>
-    </a>
+    <div class="card">
+        <h2 class="card-header">YNAB Reconciler</h2>
+        <div class="container">
+            <div class="card-body">
+                <div class="row">
+                    <h5 class="card-title">Welcome!</h5>
+                </div>
+
+                <div class="card-text">
+                    <div class="row">
+                        <p><strong>The YNAB Reconciler</strong> helps you quickly find any missing transactions from your YNAB transaction list. With a click of a button, you can reconcile your account!</p> 
+                    </div>
+
+                    <div class="row">
+                        <p>
+                            As fellow YNAB-ers and developers, we were excited to hear about the API Contest. We discussed ways in which we could integrate the API, following the YNAB method, to contribute to an application we already love... that is how the YNAB Reconciler was born.
+                            
+                        </p>
+                    </div>
+
+                    <div class="row">
+                        <p>
+                            This application was made for the <a target="_blank" href="https://www.youneedabudget.com/contest-ynab-api/">YNAB API Contest</a> by <a target="_blank" href="https://github.com/viviancan">@viviancan</a> and <a target="_blank" href="https://github.com/larryg727">@larryg727</a>. Source code can be viwed <a href="https://github.com/pixel-sa/ynab-reconciler" target="_blank">here</a>.
+                        </p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <a href="/authenticate" class="btn btn-primary">Login with YNAB</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer text-muted">
+            By signing in and using this appliction, you consent to our <a href="{{ url_for('policy') }}">privacy policy</a>.
+        </div>
+    </div>
+  
 {% endblock %}
