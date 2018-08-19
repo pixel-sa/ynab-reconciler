@@ -1,15 +1,3 @@
-// var BUDGET = {
-//     runtime:{
-//         message: ''
-//     },
-
-//     init:function(message){
-//         console.log('WHHHHHAT!')
-//         BUDGET.runtime.message = message
-//         console.log(BUDGET.runtime.message)
-//     }
-// }
-
 $(document).ready(function(){
     console.log("hello!");
 
@@ -140,14 +128,68 @@ $(document).ready(function(){
 
 
     function manualMapping(){
-        $("#alert-message").html("Sorry! We don't support additional banks yet! Help us out by submitting <a target='_blank' href='https://goo.gl/forms/62b01aknc1epECWb2'>this form!</a>").show();
+        // $("#alert-message").html("Sorry! We don't support additional banks yet! Help us out by submitting <a target='_blank' href='https://goo.gl/forms/62b01aknc1epECWb2'>this form!</a>").show();
 
         var html = "";
-        html += '<label>Does your transaction csv have separate columns for debits and credits?</label>';
-        html += '<label for="account-select">Select Account to Reconcile</label>';
-        html += '<select class="form-control" id="account-select">';
-        html += '<option disabled selected>Choose One</option>';
-        html += '</select>';       
+        html += '<label>Since we don\'t have your bank\'s csv format just yet, we can try to reconcile through manual mapping. <br>Select the column that matches the following fields:</label>';
+        html += '<div class="row">';
+
+        html += '<div class="col-sm-3">';
+            html += '<label for="date-select">Date</label>';
+            html += '<select class="form-control" id="date-select">';
+            html += '<option selected disabled>Choose One</option>';
+            html += '<option value="date-zero">Column 1</option>';
+            html += '<option value="date-one">Column 2</option>';
+            html += '<option value="date-two">Column 3</option>';
+            html += '<option value="date-three">Column 4</option>';
+            html += '<option value="date-four">Column 5</option>';
+            html += '<option value="date-five">Column 6</option>';
+            html += '</select>';       
+        html += '</div>'; 
+
+        html += '<div class="col-sm-3">';
+            html += '<label for="description-select">Description</label>';
+            html += '<select class="form-control" id="description-select">';
+            html += '<option disabled selected>Choose One</option>';
+            html += '<option value="description-zero">Column 1</option>';
+            html += '<option value="description-one">Column 2</option>';
+            html += '<option value="description-two">Column 3</option>';
+            html += '<option value="description-three">Column 4</option>';
+            html += '<option value="description-four">Column 5</option>';
+            html += '<option value="description-five">Column 6</option>';
+            html += '</select>';       
+        html += '</div>'; 
+
+        html += '<div class="col-sm-3">';
+            html += '<label for="debit-select">Debits</label>';
+            html += '<select class="form-control" id="debit-select">';
+            html += '<option selected disabled>Choose One</option>';
+            html += '<option value="debit-zero">Column 1</option>';
+            html += '<option value="debit-one">Column 2</option>';
+            html += '<option value="debit-two">Column 3</option>';
+            html += '<option value="debit-three">Column 4</option>';
+            html += '<option value="debit-four">Column 5</option>';
+            html += '<option value="debit-five">Column 6</option>';
+            html += '</select>';       
+        html += '</div>'; 
+ 
+        html += '<div class="col-sm-3">';
+            html += '<label for="credit-select">Credits</label>';
+            html += '<select class="form-control" id="credit-select">';
+            html += '<option selected disabled>Choose One</option>';
+            html += '<option value="credit-zero">Column 1</option>';
+            html += '<option value="credit-one">Column 2</option>';
+            html += '<option value="credit-two">Column 3</option>';
+            html += '<option value="credit-three">Column 4</option>';
+            html += '<option value="credit-four">Column 5</option>';
+            html += '<option value="credit-five">Column 6</option>';
+            html += '</select>';       
+        html += '</div>'; 
+
+        html += '</div>'; 
+
+        $("#other-select").html(html);
+        displayUploadOption();
     }
 
     function displayUploadOption(){
@@ -163,8 +205,8 @@ $(document).ready(function(){
         
         html += '<form id="upload-file" action="upload/csv" method="post" enctype="multipart/form-data">';
         html += '<fieldset>';
-        html += '<label for="file">Upload CSV file</label>';
-        html += '<input name="file" type="file">';
+        // html += '<label for="file">Upload CSV file</label>';
+        html += '<input name="file" type="file" accept=".csv">';
         html += '</fieldset>';
         html += '<fieldset>';
         html += '<input type="submit" class="btn btn-primary" id="upload-file-btn" value="Upload CSV"></input>';
