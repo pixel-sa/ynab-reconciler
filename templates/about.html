@@ -1,21 +1,20 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-    <div class="jumbotron text-center">
-        <h1>Welcome to YNAB Reconciler</h1>
-        <p class="lead">This app is...</p>
-    </div>
+	<div class="form-group">
+		<label for="budget-select">Select Budget to Reconcile</label>
+		<select class="form-control" id="budget-select">
+			{% for budget in budgets.data.budgets %}
+				<option data-id={{budget.id}}>{{budget.name}}</option>
+			{% endfor %}	
+		</select>
+	</div>
 
-    <div>
-        {{budgets}}
-
-    </div>
-
-    <ul>
-        {% for budget in budgets.data.budgets %}
-            <li data-id={{budget.id}}>{{budget.name}}</li>
-        {% endfor %}
-    </ul>
+	<!-- <script src="{{ url_for('static', filename='js/budget.js')}}"></script>
+	<script>
+		BUDGET.init("hello message")
+	</script> -->
 
 {% endblock %}
+
 
