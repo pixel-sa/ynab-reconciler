@@ -11,7 +11,7 @@ from datetime import datetime, date, time, timedelta
 from difflib import SequenceMatcher
 
 app = Flask(__name__)
-app.secret_key = config.app_secret_key
+# app.secret_key = config.app_secret_key
 
 @app.route('/')
 def index():
@@ -25,11 +25,11 @@ def about():
 @app.route('/ynab')
 def get_budget():
 
-    # access_token = config.access_token
-    print(session['token'])
-    access_token = session['token']
-    access_token = access_token['access_token']
-    print(access_token)
+    access_token = config.access_token
+    # print(session['token'])
+    # access_token = session['token']
+    # access_token = access_token['access_token']
+    # print(access_token)
     header = {'Authorization': 'Bearer ' + access_token}
 
     url = 'https://api.youneedabudget.com/v1/budgets'
@@ -37,6 +37,7 @@ def get_budget():
 
     print(response)
     print(response.status_code)
+    print(response.headers)
 
     if response.status_code == 200:
         budget_list = response.json()
@@ -45,10 +46,9 @@ def get_budget():
     else:
         return("Error!!! " + str(response.status_code))
 
-
-@app.route('/api/transactions', methods=['GET'])
-def get_transactions():
-    print("transaction api!!!")
+@app.route('/api/accounts', methods=['GET'])
+def get_accounts():
+    print("accounts api")
     budget_id = request.args['budgetId']
 
     access_token = config.access_token
@@ -58,15 +58,46 @@ def get_transactions():
     accounts_response = requests.get(get_accounts_url, headers=header)
     # print(accounts_response.json())
 
+    status = accounts_response.status_code
+    if status == 200:
+        accounts_list = accounts_response.json()
+        # print(json.dumps(budget_list, indent=4))
+        return jsonify(accounts_list)
+    else:
+        return("Error!!! " + str(status))
+
+
+
+
+@app.route('/api/transactions', methods=['GET'])
+def get_transactions():
+    print("transaction api!!!")
+    budget_id = request.args['budgetId']
+    account_id = request.args['accountId']
+    balance = request.args['balance']
+
+    print(budget_id)
+    print(account_id)
+    print(balance)
+    access_token = config.access_token
+    header = {'Authorization': 'Bearer ' + access_token}
+
+    # get_accounts_url = f'https://api.youneedabudget.com/v1/budgets/{budget_id}/accounts'
+    # accounts_response = requests.get(get_accounts_url, headers=header)
+    # print(accounts_response.json())
+
     query = '?since_date=2018-08-01'
-    url = f'https://api.youneedabudget.com/v1/budgets/{budget_id}/transactions' + query
+    # url = f'https://api.youneedabudget.com/v1/budgets/{budget_id}/transactions' + query
+    # response = requests.get(url, headers=header)
+    url = f'https://api.youneedabudget.com/v1/budgets/{budget_id}/accounts/{account_id}/transactions' + query
+    print(url)
     response = requests.get(url, headers=header)
 
     print(response)
     print(response.headers)
     # print(response.json())
     transaction_list = response.json()
-    # print(json.dumps(transaction_list, indent=4))
+    print(json.dumps(transaction_list, indent=4))
     print(type(transaction_list))
     print(len(transaction_list['data']['transactions']))
 
@@ -75,25 +106,25 @@ def get_transactions():
     return jsonify("yay!")
 
 
-@app.route('/authenticate')
-def ynab_auth():
-    print(config.get_redirect_url())
-    return redirect(f'https://app.youneedabudget.com/oauth/authorize?client_id={config.client_id}&redirect_uri={config.get_redirect_url()}&response_type=code')
-    # return redirect(f'https://app.youneedabudget.com/oauth/authorize?client_id={config.client_id}&redirect_uri={config.get_redirect_url()}&response_type=token')
+# @app.route('/authenticate')
+# def ynab_auth():
+#     print(config.get_redirect_url())
+#     return redirect(f'https://app.youneedabudget.com/oauth/authorize?client_id={config.client_id}&redirect_uri={config.get_redirect_url()}&response_type=code')
+#     # return redirect(f'https://app.youneedabudget.com/oauth/authorize?client_id={config.client_id}&redirect_uri={config.get_redirect_url()}&response_type=token')
 
-@app.route('/dashboard')
-def get_access_token():
-    code = request.args.get('code')
-    print(code)
-    params = {'client_id': config.client_id, 'client_secret': config.client_secret, 'redirect_uri': config.get_redirect_url, 'grant_type': 'authorization_code', 'code': code}
-    # response = requests.post('https://app.youneedabudget.com/oauth/token', data=params)
-    response = requests.post(f'https://app.youneedabudget.com/oauth/token?client_id={config.client_id}&client_secret={config.client_secret}&redirect_uri={config.get_redirect_url()}&grant_type=authorization_code&code={code}', data=params)
-    print(response.status_code, response.reason)
+# @app.route('/dashboard')
+# def get_access_token():
+#     code = request.args.get('code')
+#     print(code)
+#     params = {'client_id': config.client_id, 'client_secret': config.client_secret, 'redirect_uri': config.get_redirect_url, 'grant_type': 'authorization_code', 'code': code}
+#     # response = requests.post('https://app.youneedabudget.com/oauth/token', data=params)
+#     response = requests.post(f'https://app.youneedabudget.com/oauth/token?client_id={config.client_id}&client_secret={config.client_secret}&redirect_uri={config.get_redirect_url()}&grant_type=authorization_code&code={code}', data=params)
+#     print(response.status_code, response.reason)
     
-    print(response.content.decode('utf-8'))
-    session['token'] = json.loads(response.content.decode('utf-8'))
+#     print(response.content.decode('utf-8'))
+#     session['token'] = json.loads(response.content.decode('utf-8'))
 
-    return render_template('dashboard.html')
+#     return render_template('dashboard.html')
 
 
 if __name__ == '__main__':
