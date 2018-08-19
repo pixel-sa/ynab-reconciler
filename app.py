@@ -5,6 +5,7 @@ import os
 import requests
 import time
 import pandas as pd
+import io
 
 from flask import Flask, render_template, jsonify, request, redirect, session, json
 from datetime import datetime, date, time, timedelta
@@ -85,18 +86,52 @@ def get_transactions():
     data = json.loads(response.content.decode('utf-8'))
     transaction_list = data['data']['transactions']
 
-    bank_data = utils.convert_csv_to_json(csv_file)
+    # bank_data = utils.convert_csv_to_json(csv_file)
 
-    utils.reconcile_differences(transaction_list, bank_data)
+    # utils.reconcile_differences(transaction_list, bank_data)
 
     return jsonify(transaction_list)
 
 @app.route('/upload/csv', methods=["POST"])
 def uploadCsv():
-    upload = request.files['file'].read()
-    upload = upload.decode("utf-8")
-    converted_upload = utils.convert_csv_to_json(upload)
 
+    converted_transaction = {'transactions': []}
+    print("converting....")
+
+    # https://stackoverflow.com/questions/10617286/getting-type-error-while-opening-an-uploaded-csv-file
+    filename = request.files['file'].read()
+    filename = filename.decode("utf-8")
+    io_string = io.StringIO(filename)
+
+    for transaction in csv.reader(io_string, delimiter=",", quotechar='"'):
+        transaction_date = transaction[0]
+        no = transaction[1]
+        description = transaction[2]
+        debit = transaction[3]
+        credit = transaction[4]
+
+        if transaction_date.isalpha():
+            continue
+        
+        if debit:
+            converted_transaction['transactions'].append({
+                "Date": transaction_date,
+                "No.": "",
+                "Description":description,
+                "Debit": "",
+                "Credit": credit
+                
+            })         
+        elif debit:
+            converted_transaction['transactions'].append({
+                "Date": transaction_date,
+                "No.": "",
+                "Description":description,
+                "Debit": debit,
+                "Credit": ""
+                            
+            })  
+    # print(converted_transaction)
     return jsonify("success!")
 
 # @app.route('/authenticate')
