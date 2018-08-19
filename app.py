@@ -70,12 +70,12 @@ def get_transactions():
     print("transaction api!!!")
     budget_id = request.args['budgetId']
     account_id = request.args['accountId']
-    balance = request.args['balance']
+    # balance = request.args['balance']
     csv_file = 'transactions.CSV'
 
     print(budget_id)
     print(account_id)
-    print(balance)
+    # print(balance)
     access_token = config.access_token
     header = {'Authorization': 'Bearer ' + access_token}
 

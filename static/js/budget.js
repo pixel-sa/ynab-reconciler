@@ -11,122 +11,55 @@
 // }
 
 $(document).ready(function(){
-    console.log("hello!")
+    console.log("hello!");
+
+    function hideAlertMessage(){
+        $("#alert-message").hide();
+    }
+
+    initialQuestion();
+
+    function initialQuestion(){
+        var html = "";
+        html += '<div class="form-group">';
+        html += '<label>Does your transaction csv have separate columns for debits and credits?</label>';
+        html += '<div class="form-check">';
+
+        html += '<label class="form-check-label">';
+        html += '<input type="radio" class="form-check-input" name="optradio" value="yes">Yes';
+        html += '</label>';
+        html += '</div>';
+        html += '<div class="form-check">';
+        html += '<label class="form-check-label">';
+        html += '<input type="radio" class="form-check-input" name="optradio" value="no">No';
+        html += '</label>';
+        html += '</div>';
+        html += '</div>';  
+        
+        $("#initial-question").html(html);
+        initialQuestionEvents();
+    }
+
+    function initialQuestionEvents(){
+        $('input[name=optradio]').change(function(){
+            var radioValue = $( 'input[name=optradio]:checked' ).val();
+            if(radioValue == "yes"){
+                $("#main, #budget-select-div").show();
+                hideAlertMessage();
+            } else if (radioValue == "no") {
+                $("#main").hide();
+                $("#alert-message").html("Sorry! We don't support this format yet! Help us out by submitting <a target='_blank' href='https://goo.gl/forms/62b01aknc1epECWb2'>this form!</a>").show();
+            }
+        }); 
+    }
 
     $(document).on('change', '#budget-select', function() {
         $("#account-select-div").html("");
-
         var selectedBudgetId = $(this).find(':selected').data('id');
-        console.log(selectedBudgetId);
         getAccounts(selectedBudgetId);
     });
 
-    $(document).on('change', '#account-select', function() {
-        $("#balance-div").html("");
-
-        var selectedBudgetId = $('#budget-select').find(':selected').data('id');
-        var selectedAccountId = $(this).find(':selected').data('accountid');
-        var selectedBalance = $(this).find(':selected').data('balance');
-
-        displayAccountBalance(selectedBalance);
-        getTransactions(selectedBudgetId, selectedAccountId, '1500');
-    });
-
-    function displayAccountBalance(balance){
-        console.log("dispaying account balance!!!");
-        html = "";
-        html += '<div class="form-group">';
-        html += '<label for="account-balance">Please enter correct account balance</label>';
-        html += '<input type="text" class="form-control" id="account-balance" placeholder="Current account balance">';
-        // html += '<small id="emailHelp" class="form-text text-muted">Your most up to date account balance is'+ balance +'</small>';
-        html += '</div>';
-        
-        html += '<form id="upload-file" action="upload/csv" method="post" enctype="multipart/form-data">';
-        html += '<fieldset>';
-        html += '<label for="file">Select a file</label>';
-        html += '<input name="file" type="file">';
-        html += '</fieldset>';
-        html += '<fieldset>';
-        html += '<input type="submit" class="btn btn-primary" id="upload-file-btn">Submit!</input>';
-        html += '</fieldset>';
-        html += '</form>';
-
-
-
-        // html += '<form id="upload-csv-form" method="post" enctype="multipart/form-data">';
-        // html += '<div class="form-group">';
-
-        // html += '<div class="input-group mb-3">';
-        // html += '<div class="input-group-prepend">';
-        // html += '<span class="input-group-text" id="inputGroupFileAddon01">Upload</span>';
-        // html += '</div>';
-        // html += '<div class="custom-file">';
-        // html += '<input type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">';
-        // html += '<label class="custom-file-label" for="inputGroupFile01">Choose file</label>';
-        // html += '</div>';
-        // html += '</div>';
-        // html += '</div>';
-        // html += '<button type="submit" class="btn btn-primary" id="upload-file-btn">Submit</button>';
-        // html += '</form>';
-
-        $("#balance-div").html(html);
-        // dispalyFileName();
-        // uploadCsvFile();
-
-        // $('#upload-file-btn').click(function() {
-        //     var form_data = new FormData($('#upload-file')[0]);
-        //     $.ajax({
-        //         type: 'POST',
-        //         url: '/upload/csv',
-        //         data: form_data,
-        //         contentType: false,
-        //         cache: false,
-        //         processData: false,
-        //         async: false,
-        //         success: function(data) {
-        //             console.log('Success!');
-        //         },
-        //     });
-        // });
-
-    }
-
-    function dispalyFileName(){
-        $('.custom-file-input').on('change',function(){
-            console.log("display!!!");
-            var fileName = $(this).val();
-            console.log(fileName);
-            $(this).next('.custom-file-label').html(fileName);
-        })    
-    }
-
-    function uploadCsvFile(){
-
-        $(document).on('click', '#upload-file-btn', function(event) {
-            console.log(event);
-            var form_data = new FormData($('#upload-file')[0]);
-            $.ajax({
-                type: 'POST',
-                url: '/upload/csv',
-                data: form_data,
-                contentType: false,
-                cache: false,
-                processData: false,
-                success: function(response) {
-                    return false;
-                    event.preventDefault();
-                    console.log(response);
-                },
-            });
-        
-
-            return false;
-        });
-
-    }
-
     function getAccounts(budgetId){
-        console.log(budgetId);
         console.log('getting accounts');
         $.ajax({
             type: 'GET',
@@ -135,8 +68,6 @@ $(document).ready(function(){
             success: function(response){
                 console.log(response);
                 populateAccounts(response,budgetId)
-
-
             },
             error: function(xhr){
                 // TODO: HANDLE ERROR
@@ -148,7 +79,6 @@ $(document).ready(function(){
         console.log("populating accounts!")
 
         accounts = accountList['data']['accounts']
-
         var html = "";
         html += '<label for="account-select">Select Account to Reconcile</label>';
         html += '<select class="form-control" id="account-select">';
@@ -158,22 +88,99 @@ $(document).ready(function(){
             html += '<option data-budgetid="'+ budgetId +'" data-balance="'+element['balance'] +'" data-accountid="'+ element['id'] +'">'+element['name'] +'</option>';   
         });
 
-
         html += '</select>';
 
         $("#account-select-div").html(html);
-
     }
 
-    function getTransactions(budgetId, accountId, balance){
+
+    $(document).on('change', '#account-select', function() {
+        $("#balance-div").html("");
+        var selectedBudgetId = $('#budget-select').find(':selected').data('id');
+        var selectedAccountId = $(this).find(':selected').data('accountid');
+        var selectedBalance = $(this).find(':selected').data('balance');
+        
+        displayBankOptions();
+        // displayUploadOption(selectedBalance);
+        getTransactions(selectedBudgetId, selectedAccountId);
+    });
+
+    function displayBankOptions(){
+        html = "";
+        html += '<div class="form-group">';
+        html += '<label for="bank-select">Select Bank (This is so we know your csv format!)</label>';
+        html += '<select class="form-control" id="bank-select">';
+        html += '<option disabled selected> Select One</option>';
+        html += '<option value="ibc"> International Bank of Commerce (IBC) </option>';
+        html += '<option value="nfcu"> Navy Federal Credit Union (NFCU) </option>';
+        html += '<option value="other"> Other</option>';
+        html += '</select>';
+        html += '</div>';
+
+        $("#bank-div").html(html);
+        bankOptionEvents();      
+    }
+
+    function bankOptionEvents(){
+        $(document).on('change', '#bank-select', function() {    
+            var selectedBank = this.value
+
+            if (selectedBank == "nfcu" || selectedBank == "ibc"){
+                displayUploadOption();
+            } else {    
+                manualMapping();
+            }
+
+    
+            // displayUploadOption(selectedBalance);
+            // getTransactions(selectedBudgetId, selectedAccountId, '1500');
+        });
+    }
+
+
+
+    function manualMapping(){
+        $("#alert-message").html("Sorry! We don't support additional banks yet! Help us out by submitting <a target='_blank' href='https://goo.gl/forms/62b01aknc1epECWb2'>this form!</a>").show();
+
+        var html = "";
+        html += '<label>Does your transaction csv have separate columns for debits and credits?</label>';
+        html += '<label for="account-select">Select Account to Reconcile</label>';
+        html += '<select class="form-control" id="account-select">';
+        html += '<option disabled selected>Choose One</option>';
+        html += '</select>';       
+    }
+
+    function displayUploadOption(){
+        console.log("dispaying account balance!!!");
+        hideAlertMessage();
+
+        html = "";
+
+        // html += '<div class="form-group">';
+        // html += '<label for="account-balance">Please enter correct bank account balance</label>';
+        // html += '<input type="text" class="form-control" id="account-balance" placeholder="account balance">';
+        // html += '</div>';
+        
+        html += '<form id="upload-file" action="upload/csv" method="post" enctype="multipart/form-data">';
+        html += '<fieldset>';
+        html += '<label for="file">Upload CSV file</label>';
+        html += '<input name="file" type="file">';
+        html += '</fieldset>';
+        html += '<fieldset>';
+        html += '<input type="submit" class="btn btn-primary" id="upload-file-btn" value="Upload CSV"></input>';
+        html += '</fieldset>';
+        html += '</form>';
+        
+        $("#balance-div").html(html);
+    }
+
+    function getTransactions(budgetId, accountId){
         console.log('getting transactions');
-        console.log(budgetId);
-        console.log(accountId)
-        console.log(balance)
+    
         $.ajax({
             type: 'GET',
             url: 'api/transactions',
-            data:{budgetId: budgetId, accountId: accountId, balance: balance},
+            data:{budgetId: budgetId, accountId: accountId},
             success: function(response){
                 console.log(response)
 
@@ -183,6 +190,5 @@ $(document).ready(function(){
             }
         })
     }
-
 
 });
