@@ -91,7 +91,7 @@ def get_transactions():
 
     # bank_data = utils.convert_csv_to_json(csv_file)
 
-    utils.reconcile_differences(transaction_list, bank_data, limit_date)
+    # utils.reconcile_differences(transaction_list, bank_data, limit_date)
 
     return jsonify(transaction_list)
 
@@ -100,6 +100,9 @@ def uploadCsv():
 
     converted_transaction = {'transactions': []}
     print("converting....")
+
+    budget_id = request.form.get('budgetId')
+    account_id = request.form.get('accountId')
 
     # https://stackoverflow.com/questions/10617286/getting-type-error-while-opening-an-uploaded-csv-file
     filename = request.files['file'].read()
@@ -135,7 +138,7 @@ def uploadCsv():
                             
             })  
     # print(converted_transaction)
-    return jsonify("success!")
+    return render_template("reconcile.html")
 
 @app.route('/policy')
 def policy():

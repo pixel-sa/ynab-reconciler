@@ -195,6 +195,11 @@ $(document).ready(function(){
     function displayUploadOption(){
         console.log("dispaying account balance!!!");
         hideAlertMessage();
+        var selectedBudgetId = $('#budget-select').find(':selected').data('id');
+        var selectedAccountId = $('#account-select').find(':selected').data('accountid');
+
+        console.log(selectedBudgetId)
+        console.log(selectedAccountId)
 
         html = "";
 
@@ -211,6 +216,8 @@ $(document).ready(function(){
         html += '<fieldset>';
         html += '<input type="submit" class="btn btn-primary" id="upload-file-btn" value="Upload CSV"></input>';
         html += '</fieldset>';
+        html += '<input type="hidden" id="budgetId" name="budgetId" value="'+ selectedBudgetId +'"'
+        html += '<input type="hidden" id="accountId" name="accountId" value="'+ selectedAccountId +'">'
         html += '</form>';
         
         $("#balance-div").html(html);
