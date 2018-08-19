@@ -26,11 +26,9 @@ $(document).ready(function(){
 
         var selectedBudgetId = $('#budget-select').find(':selected').data('id');
         var selectedAccountId = $(this).find(':selected').data('accountid');
-        // var selectedBalance = $(this).find(':selected').data('balance');
+        var selectedBalance = $(this).find(':selected').data('balance');
 
-        // displayAccountBalance(selectedBalance);
-
-
+        displayAccountBalance(selectedBalance);
         getTransactions(selectedBudgetId, selectedAccountId, '1500');
     });
 
@@ -43,13 +41,13 @@ $(document).ready(function(){
         // html += '<small id="emailHelp" class="form-text text-muted">Your most up to date account balance is'+ balance +'</small>';
         html += '</div>';
         
-        html += '<form id="upload-file" method="post" enctype="multipart/form-data">';
+        html += '<form id="upload-file" action="upload/csv" method="post" enctype="multipart/form-data">';
         html += '<fieldset>';
         html += '<label for="file">Select a file</label>';
         html += '<input name="file" type="file">';
         html += '</fieldset>';
         html += '<fieldset>';
-        html += '<button type="submit" class="btn btn-primary" id="upload-file-btn">Submit!</button>';
+        html += '<input type="submit" class="btn btn-primary" id="upload-file-btn">Submit!</input>';
         html += '</fieldset>';
         html += '</form>';
 
@@ -72,24 +70,24 @@ $(document).ready(function(){
         // html += '</form>';
 
         $("#balance-div").html(html);
-        dispalyFileName();
+        // dispalyFileName();
         // uploadCsvFile();
 
-        $('#upload-file-btn').click(function() {
-            var form_data = new FormData($('#upload-file')[0]);
-            $.ajax({
-                type: 'POST',
-                url: '/upload/csv',
-                data: form_data,
-                contentType: false,
-                cache: false,
-                processData: false,
-                async: false,
-                success: function(data) {
-                    console.log('Success!');
-                },
-            });
-        });
+        // $('#upload-file-btn').click(function() {
+        //     var form_data = new FormData($('#upload-file')[0]);
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: '/upload/csv',
+        //         data: form_data,
+        //         contentType: false,
+        //         cache: false,
+        //         processData: false,
+        //         async: false,
+        //         success: function(data) {
+        //             console.log('Success!');
+        //         },
+        //     });
+        // });
 
     }
 

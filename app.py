@@ -35,6 +35,7 @@ def get_budget():
 
     url = 'https://api.youneedabudget.com/v1/budgets'
     response = requests.get(url, headers=header)
+    print(response.headers['X-RATE-LIMIT'])
 
     if response.status_code == 200:
         budget_list = response.json()
@@ -92,21 +93,9 @@ def get_transactions():
 
 @app.route('/upload/csv', methods=["POST"])
 def uploadCsv():
-    print(request)
-    print(request.files)
-    print(request.files['file'])
-    print("*****")
-    print("")
-
     upload = request.files['file'].read()
-    print(upload)
-
-   
-
-
-
-
-    
+    upload = upload.decode("utf-8")
+    converted_upload = utils.convert_csv_to_json(upload)
 
     return jsonify("success!")
 
