@@ -24,14 +24,14 @@ $(document).ready(function(){
     $(document).on('change', '#account-select', function() {
         $("#balance-div").html("");
 
-        var selectedBudgetId = $(this).find(':selected').data('budgetid');
+        var selectedBudgetId = $('#budget-select').find(':selected').data('id');
         var selectedAccountId = $(this).find(':selected').data('accountid');
-        var selectedBalance = $(this).find(':selected').data('balance');
+        // var selectedBalance = $(this).find(':selected').data('balance');
 
-        displayAccountBalance(selectedBalance);
+        // displayAccountBalance(selectedBalance);
 
 
-        // getTransactions(selectedBudgetId, selectedAccountId, selectedBalance);
+        getTransactions(selectedBudgetId, selectedAccountId, '1500');
     });
 
     function displayAccountBalance(balance){
