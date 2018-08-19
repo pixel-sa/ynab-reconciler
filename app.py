@@ -76,8 +76,11 @@ def get_transactions():
     print(balance)
     access_token = config.access_token
     header = {'Authorization': 'Bearer ' + access_token}
-
-    query = '?since_date=2018-08-01'
+    since_date = datetime.now().date() - timedelta(days=10)
+    limit_date = since_date + timedelta(days=3)
+    print(since_date)
+    print(limit_date)
+    query = f'?since_date={since_date}'
     url = f'https://api.youneedabudget.com/v1/budgets/{budget_id}/accounts/{account_id}/transactions' + query
     response = requests.get(url, headers=header)
 
@@ -86,7 +89,7 @@ def get_transactions():
 
     bank_data = utils.convert_csv_to_json(csv_file)
 
-    utils.reconcile_differences(transaction_list, bank_data)
+    utils.reconcile_differences(transaction_list, bank_data, limit_date)
 
     return jsonify(transaction_list)
 
