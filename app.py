@@ -77,17 +77,7 @@ def get_transactions():
     print(account_id)
     # print(balance)
     access_token = config.access_token
-    header = {'Authorization': 'Bearer ' + access_token}
-    since_date = datetime.now().date() - timedelta(days=10)
-    limit_date = since_date + timedelta(days=3)
-    print(since_date)
-    print(limit_date)
-    query = f'?since_date={since_date}'
-    url = f'https://api.youneedabudget.com/v1/budgets/{budget_id}/accounts/{account_id}/transactions' + query
-    response = requests.get(url, headers=header)
-
-    data = json.loads(response.content.decode('utf-8'))
-    transaction_list = data['data']['transactions']
+    
 
     # bank_data = utils.convert_csv_to_json(csv_file)
 
@@ -103,6 +93,8 @@ def uploadCsv():
 
     budget_id = request.form.get('budgetId')
     account_id = request.form.get('accountId')
+    print(budget_id)
+    print(account_id)
 
     # https://stackoverflow.com/questions/10617286/getting-type-error-while-opening-an-uploaded-csv-file
     filename = request.files['file'].read()
@@ -119,7 +111,7 @@ def uploadCsv():
         if transaction_date.isalpha():
             continue
         
-        if debit:
+        if credit:
             converted_transaction['transactions'].append({
                 "Date": transaction_date,
                 "No.": "",
@@ -138,7 +130,14 @@ def uploadCsv():
                             
             })  
     # print(converted_transaction)
-    return render_template("reconcile.html")
+    
+    access_token = config.access_token
+    transaction_list = utils.get_ynab_transactions(access_token, budget_id, account_id)
+
+    last_date = datetime.now().date() - timedelta(days=7)
+    unmatched_transactions = utils.reconcile_differences(transaction_list, converted_transaction, last_date)    
+
+    return render_template("reconcile.html", unmatched_transactions=unmatched_transactions, accountId=account_id, budgetId=budget_id)
 
 @app.route('/policy')
 def policy():
