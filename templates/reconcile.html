@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<div class="row">
+    <h2>Here are your reconciler results:</h2>
+</div>
+
+<div>
+    {% if unmatched_transactions['bank']|length > 0 or unmatched_transactions['ynab']|length > 0 %}
+        <p>Unmatched bank transactions: <strong>{{ unmatched_transactions['bank']|length }}</strong></p>
+        {% if unmatched_transactions['bank']|length > 0 %}
+            <ul>
+                {% for transaction in unmatched_transactions['bank'] %}
+                    <li>{{ transaction['Date'] }} - {{ transaction['Description'] }} - ${{ transaction['Debit'] + transaction['Credit'] }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <p>Unmatched YNAB transactions: <strong>{{ unmatched_transactions['ynab']|length }}</strong></p>
+        {% if unmatched_transactions['ynab']|length > 0 %}
+            <ul>
+                {% for transaction in unmatched_transactions['ynab'] %}
+                    <li>{{ transaction['date'] }} - {{ transaction['payee_name'] }} - ${{ '%0.2f'|format(transaction['amount']|int / 1000) }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% else %}
+        <h4>No discrepencies were found</h4>
+    {% endif %}
+</div>
+
+<!-- <button id="reconcile-button">reconcile</button> -->
+
+
+
+
+{% endblock %}

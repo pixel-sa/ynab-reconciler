@@ -1,21 +1,34 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-    <div class="jumbotron text-center">
-        <h1>Welcome to YNAB Reconciler</h1>
-        <p class="lead">This app is...</p>
-    </div>
+	<div class="alert alert-danger" role="alert" id="alert-message" style="display: none;">
+		Change a few things up and try submitting again.
+	</div>
 
-    <div>
-        {{budgets}}
+	<div id="initial-question"></div>
 
-    </div>
+	<div id="main">
+		<div id="budget-select-div" class="form-group" style="display: none;">
+			<label for="budget-select">Select YNAB Budget</label>
+			<select class="form-control" id="budget-select">
+				<option disabled selected>Choose One</option>
 
-    <ul>
-        {% for budget in budgets.data.budgets %}
-            <li data-id={{budget.id}}>{{budget.name}}</li>
-        {% endfor %}
-    </ul>
+				{% for budget in budgets.data.budgets %}
+					<option data-id={{budget.id}}>{{budget.name}}</option>
+				{% endfor %}	
+			</select>
+		</div>
+
+		<div class="form-group">
+			<div id="account-select-div"></div>
+		</div>
+
+		<div id="bank-div"></div>
+		<div id="other-select"></div>
+		<div id="balance-div" class="pull-right" style="margin-top: 30px;"></div>
+	
+	</div>
 
 {% endblock %}
+
 
