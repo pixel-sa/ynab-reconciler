@@ -1,10 +1,21 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-<h2>reconcile!!!</h2>
+
+<div class="row">
+    <h2>Here are your unmatched transactions:</h2>
+</div>
+
+<div class="row">
 <p>budget id: {{ budgetId }}</p>
 <p>account id: {{ accountId }}</p>
 <p>Unmatched bank transactions: {{ unmatched_transactions['bank'] }}</p>
 <p>unmatched ynab transactions: {{ unmatched_transactions['ynab'] }}</p>
+</div>
+
+<!-- <button id="reconcile-button">reconcile</button> -->
+
+
+
 
 {% endblock %}

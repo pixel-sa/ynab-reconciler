@@ -143,6 +143,83 @@ def uploadCsv():
 def policy():
     return render_template('policy.html')
 
+@app.route('/reconcile')
+def reconcile():
+    return render_template('reconcile.html')
+
+@app.route('/api/transactions/post', methods=['POST'])
+def post_transactions():
+
+    params = request.form
+    budget_id = params['budget_id']
+    account_id = params['account_id']
+    date = params['date']
+    amount = params['amount']
+    payee_id = params['payee_id']
+    payee_name = params['payee_name']
+    category_id = params['category_id']
+    memo = params['memo']
+    cleared = params['cleared']
+    approved = params['approved']
+    flag_color = params['flag_color']
+    import_id = params['import_id']
+
+    date = datetime.now().isoformat()
+
+
+    missing_transaction = {
+        "transaction":
+        {
+            "account_id": account_id,
+            "date": date,
+            "amount": 5000,
+            # "payee_id": "",
+            "payee_name": "TEST TEST TEST",
+            # "category_id": "",
+            "memo": "TEST",
+            "cleared": "cleared",
+            "approved": True,
+            "flag_color": "red",
+            "import_id": "null"
+        }
+    }
+    # missing_transaction = {
+    #     "transaction":
+    #     {
+    #         "account_id": account_id,
+    #         "date": date,
+    #         "amount": amount,
+    #         "payee_id": payee_id,
+    #         "payee_name": payee_name,
+    #         "category_id": category_id,
+    #         "memo": memo,
+    #         "cleared": "cleared",
+    #         "approved": approved,
+    #         "flag_color": flag_color,
+    #         "import_id": import_id
+    #     }
+    # }
+
+    print(missing_transaction)
+
+
+    access_token = config.access_token
+    header = {'Authorization': 'Bearer ' + access_token}
+    data = missing_transaction
+    print(type(data))
+
+   
+    url = f'https://api.youneedabudget.com/v1/budgets/{budget_id}/transactions' 
+    response = requests.post(url, json=missing_transaction, headers=header)
+    print(response)
+    print(response.status_code)
+    print(response.content)
+
+    data_j = json.dumps(data)
+    print(type(data_j))
+  
+    return jsonify("yay!")
+
 # @app.route('/authenticate')
 # def ynab_auth():
 #     print(config.get_redirect_url())
