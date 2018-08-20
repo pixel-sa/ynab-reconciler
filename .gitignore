@@ -4,3 +4,4 @@ config.py
 extra.py
 .ebextensions
 .DS_Store
+*.zip
