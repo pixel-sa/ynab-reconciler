@@ -2,3 +2,6 @@ config.py
 *.pyc
 *.csv
 extra.py
+.ebextensions
+.DS_Store
+*.zip

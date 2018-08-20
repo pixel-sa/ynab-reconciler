@@ -4,7 +4,6 @@ import json
 import os
 import requests
 import time
-import pandas as pd
 import io
 
 from flask import Flask, render_template, jsonify, request, redirect, session, json
@@ -12,18 +11,18 @@ from datetime import datetime, date, time, timedelta
 from difflib import SequenceMatcher
 import utils as utils
 
-app = Flask(__name__)
-app.secret_key = config.app_secret_key
+application = Flask(__name__)
+application.secret_key = config.app_secret_key
 
-@app.route('/')
+@application.route('/')
 def index():
     return render_template('home.html')
 
-@app.route('/about')
+@application.route('/about')
 def about():
     return render_template('about.html')
 
-@app.route('/ynab', methods=['GET', 'POST'])
+@application.route('/ynab', methods=['GET', 'POST'])
 def get_budget():
 
     access_token = utils.get_session_token()
@@ -43,7 +42,7 @@ def get_budget():
     else:
         return("Error!!! " + str(response.status_code))
 
-@app.route('/api/accounts', methods=['GET'])
+@application.route('/api/accounts', methods=['GET'])
 def get_accounts():
     print("accounts api")
     budget_id = request.args['budgetId']
@@ -64,7 +63,7 @@ def get_accounts():
 
 
 
-@app.route('/api/transactions', methods=['GET'])
+@application.route('/api/transactions', methods=['GET'])
 def get_transactions():
     print("transaction api!!!")
     budget_id = request.args['budgetId']
@@ -82,9 +81,9 @@ def get_transactions():
 
     # utils.reconcile_differences(transaction_list, bank_data, limit_date)
 
-    return jsonify(transaction_list)
+    return jsonify("success")
 
-@app.route('/upload/csv', methods=["POST"])
+@application.route('/upload/csv', methods=["POST"])
 def uploadCsv():
 
     converted_transaction = {'transactions': []}
@@ -138,15 +137,15 @@ def uploadCsv():
 
     return render_template("reconcile.html", unmatched_transactions=unmatched_transactions, accountId=account_id, budgetId=budget_id)
 
-@app.route('/policy')
+@application.route('/policy')
 def policy():
     return render_template('policy.html')
 
-@app.route('/reconcile')
+@application.route('/reconcile')
 def reconcile():
     return render_template('reconcile.html')
 
-@app.route('/api/transactions/post', methods=['POST'])
+@application.route('/api/transactions/post', methods=['POST'])
 def post_transactions():
 
     params = request.form
@@ -219,11 +218,11 @@ def post_transactions():
   
     return jsonify("yay!")
 
-@app.route('/authenticate')
+@application.route('/authenticate')
 def ynab_auth():
     return redirect(f'https://app.youneedabudget.com/oauth/authorize?client_id={config.client_id}&redirect_uri={config.get_redirect_url()}&response_type=code')
 
-@app.route('/dashboard')
+@application.route('/dashboard')
 def get_access_token():
     code = request.args.get('code')
     
@@ -238,5 +237,5 @@ def get_access_token():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    application.run(debug=True)
 
