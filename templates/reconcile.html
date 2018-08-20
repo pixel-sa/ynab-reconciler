@@ -3,14 +3,30 @@
 {% block body %}
 
 <div class="row">
-    <h2>Here are your unmatched transactions:</h2>
+    <h2>Here are your reconciler results:</h2>
 </div>
 
-<div class="row">
-<p>budget id: {{ budgetId }}</p>
-<p>account id: {{ accountId }}</p>
-<p>Unmatched bank transactions: {{ unmatched_transactions['bank'] }}</p>
-<p>unmatched ynab transactions: {{ unmatched_transactions['ynab'] }}</p>
+<div>
+    {% if unmatched_transactions['bank']|length > 0 or unmatched_transactions['ynab']|length > 0 %}
+        <p>Unmatched bank transactions: <strong>{{ unmatched_transactions['bank']|length }}</strong></p>
+        {% if unmatched_transactions['bank']|length > 0 %}
+            <ul>
+                {% for transaction in unmatched_transactions['bank'] %}
+                    <li>{{ transaction['Date'] }} - {{ transaction['Description'] }} - ${{ transaction['Debit'] + transaction['Credit'] }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <p>Unmatched YNAB transactions: <strong>{{ unmatched_transactions['ynab']|length }}</strong></p>
+        {% if unmatched_transactions['ynab']|length > 0 %}
+            <ul>
+                {% for transaction in unmatched_transactions['ynab'] %}
+                    <li>{{ transaction['date'] }} - {{ transaction['payee_name'] }} - ${{ '%0.2f'|format(transaction['amount']|int / 1000) }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% else %}
+        <h4>No discrepencies were found</h4>
+    {% endif %}
 </div>
 
 <!-- <button id="reconcile-button">reconcile</button> -->
