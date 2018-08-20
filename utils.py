@@ -1,7 +1,10 @@
 import csv
+import os
 import json
 import requests
+import config
 from datetime import date, datetime, timedelta
+from flask import session
 
 
 
@@ -106,7 +109,7 @@ def reconcile_differences(transactions, converted_bank_csv, since_date):
 
 def get_ynab_transactions(access_token, budget_id, account_id):
     header = {'Authorization': 'Bearer ' + access_token}
-    since_date = datetime.now().date() - timedelta(days=10)
+    since_date = datetime.now().date() - timedelta(days=17)
     
     query = f'?since_date={since_date}'
     url = f'https://api.youneedabudget.com/v1/budgets/{budget_id}/accounts/{account_id}/transactions' + query
@@ -114,6 +117,15 @@ def get_ynab_transactions(access_token, budget_id, account_id):
     
     data = json.loads(response.content.decode('utf-8'))
     transaction_list = data['data']['transactions']
-    
 
     return transaction_list
+
+def get_session_token():
+    access_token = ''
+    if os.getenv('ENVIRONMENT') == 'dev':
+        access_token = config.access_token
+    else:
+        session_tokens = session['token']
+        access_token = session_tokens['access_token']
+
+    return access_token
