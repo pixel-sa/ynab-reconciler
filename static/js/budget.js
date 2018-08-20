@@ -1,5 +1,4 @@
 $(document).ready(function(){
-    console.log("hello!");
 
     function hideAlertMessage(){
         $("#alert-message").hide();
@@ -48,13 +47,11 @@ $(document).ready(function(){
     });
 
     function getAccounts(budgetId){
-        console.log('getting accounts');
         $.ajax({
             type: 'GET',
             url: 'api/accounts',
             data:{budgetId: budgetId},
             success: function(response){
-                console.log(response);
                 populateAccounts(response,budgetId)
             },
             error: function(xhr){
@@ -64,7 +61,6 @@ $(document).ready(function(){
     }
 
     function populateAccounts(accountList, budgetId){
-        console.log("populating accounts!")
 
         accounts = accountList['data']['accounts']
         var html = "";
@@ -113,8 +109,15 @@ $(document).ready(function(){
         $(document).on('change', '#bank-select', function() {    
             var selectedBank = this.value
 
-            if (selectedBank == "nfcu" || selectedBank == "ibc"){
+            // if (selectedBank == "nfcu" || selectedBank == "ibc"){
+            //     displayUploadOption();
+            //     $("#other-select").html("");
+            // } else {    
+            //     manualMapping();
+            // }
+            if (selectedBank == "nfcu"){
                 displayUploadOption();
+                $("#other-select").html("");
             } else {    
                 manualMapping();
             }
@@ -128,7 +131,7 @@ $(document).ready(function(){
 
 
     function manualMapping(){
-        // $("#alert-message").html("Sorry! We don't support additional banks yet! Help us out by submitting <a target='_blank' href='https://goo.gl/forms/62b01aknc1epECWb2'>this form!</a>").show();
+        $("#alert-message").html("Sorry! We don't support additional banks yet! Help us out by submitting <a target='_blank' href='https://goo.gl/forms/62b01aknc1epECWb2'>this form!</a>").show();
 
         var html = "";
         html += '<label>Since we don\'t have your bank\'s csv format just yet, we can try to reconcile through manual mapping. <br>Select the column that matches the following fields:</label>';
@@ -188,18 +191,14 @@ $(document).ready(function(){
 
         html += '</div>'; 
 
-        $("#other-select").html(html);
-        displayUploadOption();
+        // $("#other-select").html(html);
+        // displayUploadOption();
     }
 
     function displayUploadOption(){
-        console.log("dispaying account balance!!!");
         hideAlertMessage();
         var selectedBudgetId = $('#budget-select').find(':selected').data('id');
         var selectedAccountId = $('#account-select').find(':selected').data('accountid');
-
-        console.log(selectedBudgetId)
-        console.log(selectedAccountId)
 
         html = "";
 
@@ -223,13 +222,48 @@ $(document).ready(function(){
         $("#balance-div").html(html);
     }
 
-    function getTransactions(budgetId, accountId){
-        console.log('getting transactions');
-    
+    function getTransactions(budgetId, accountId){    
         $.ajax({
             type: 'GET',
             url: 'api/transactions',
             data:{budgetId: budgetId, accountId: accountId},
+            success: function(response){
+
+            },
+            error: function(xhr){
+                // TODO: HANDLE ERROR
+            }
+        })
+    }
+
+    // $("#reconcile-button").on("click", function(){
+    //     console.log("reconcile button clicked!!!")
+    //     postTransaction();
+    // });
+
+    $(document).on('click', '#reconcile-button', function() {    
+        postTransaction();
+    });
+
+    function postTransaction(accountId, budgetId){    
+        $.ajax({
+            type: 'POST',
+            url: 'api/transactions/post',
+            data:{
+                budget_id: budgetId, 
+                account_id: accountId,
+                date: "8/19/2018",
+                amount: 5000,
+                payee_id: "",
+                payee_name: "test transaction",
+                category_id: "",
+                memo: "test test test",
+                cleared: "cleared",
+                approved: true,
+                flag_color: "red",
+                import_id: ""
+        
+            },
             success: function(response){
                 console.log(response)
 
